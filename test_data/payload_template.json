@@ -14,7 +14,8 @@
             "UnityX": 1,
             "UnityY": 1,
             "UnityZ": 1
-        },
-        "errorCode": 0
-    }
+        }
+    },
+    "errorCode": 0,
+    "errorMessage": ""
 }
