@@ -96,15 +96,15 @@ if __name__ == '__main__':
 
         try:
             q, m0, m1, m2 = extract_coordinates(args.input_file)
-        except SteamBaseException as e:
+        except StreamBaseException as e:
             payload['errorCode'] = e.error_code
             payload['errorMessage'] = e.error_message
 
         # save to file
-        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_pts.txt', q)
-        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleX.txt', m0)
-        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleY.txt', m1)
-        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleZ.txt', m2)
+        #np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_pts.txt', q)
+        #np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleX.txt', m0)
+        #np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleY.txt', m1)
+        #np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleZ.txt', m2)
 
         if payload['errorCode'] == 0:
             k = 10.
