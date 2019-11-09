@@ -13,7 +13,7 @@ class StreamBaseError(Exception):
     error_message = "Steam Error"
 
 
-class UmbrellaOutsideError(StreamException):
+class UmbrellaOutsideError(StreamBaseError):
 
     error_code = 2
     error_message = "Umbrella outside field of view"
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     parser.add_argument('--hl-port', metavar='port', type=int,
                         help='Hololens port')
     parser.add_argument('--input-file', required=True,
-                        help='Brain sight input file')
+                        help='Brain sight exported file')
     args = parser.parse_args()
 
 
