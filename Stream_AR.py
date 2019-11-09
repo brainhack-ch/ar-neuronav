@@ -110,33 +110,30 @@ if __name__ == '__main__':
 
         if payload['errorCode'] == 0:
             k = 10.
-            payload = {
-                'data': {
-                    'OrientationPointCone': {
-                        'UnityX': q[0],
-                        'UnityY': q[2],
-                        'UnityZ': q[1],
-                    },
-                    'EndPointCone': {
-                        'UnityX': q[0] + k * m2[0],
-                        'UnityY': q[2] + k * m2[2],
-                        'UnityZ': q[1] + k * m2[1],
-                    },
-                    'OrientationPointAxe': {
-                        'UnityX': q[0] + k * m1[0],
-                        'UnityY': q[2] + k * m1[2],
-                        'UnityZ': q[1] + k * m1[1],
-                    },
-                }
+            payload['data'] = {
+                'OrientationPointCone': {
+                    'UnityX': q[0],
+                    'UnityY': q[2],
+                    'UnityZ': q[1],
+                },
+                'EndPointCone': {
+                    'UnityX': q[0] + k * m2[0],
+                    'UnityY': q[2] + k * m2[2],
+                    'UnityZ': q[1] + k * m2[1],
+                },
+                'OrientationPointAxe': {
+                    'UnityX': q[0] + k * m1[0],
+                    'UnityY': q[2] + k * m1[2],
+                    'UnityZ': q[1] + k * m1[1],
+                },
             }
 
 
         # send to holo
-        serialised_payload = json.dumps(payload, indent=4)
-        print(serialised_payload)
+        serialised_payload = json.dumps(payload)
+        #print(serialised_payload)
         if args.hl_ip and args.hl_port:
             send(serialised_payload, args.hl_ip, args.hl_port)
-
 
 
 
