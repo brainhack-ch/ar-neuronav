@@ -1,13 +1,21 @@
 import socket
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 5005
-MESSAGE = "Hello, World!"
 
-print "UDP target IP:", UDP_IP
-print "UDP target port:", UDP_PORT
-print "message:", MESSAGE
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description='UDP Sender')
+    parser.add_argument('--ip-address', default='127.0.0.1',
+                        help='IP address')
+    parser.add_argument('--port', '-p', type=int, default=5005,
+                        help='UDP port')
+    parser.add_argument('--message', default='Hello, World!',
+                        help='payload message')
+    args = parser.parse_args()
 
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
+    print "UDP target IP:", args.ip_address
+    print "UDP target port:", args.port
+    print "message:", args.message
+
+    sock = socket.socket(socket.AF_INET, # Internet
+                         socket.SOCK_DGRAM) # UDP
+    sock.sendto(args.message, (args.ip_address, args.port))

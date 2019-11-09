@@ -1,12 +1,21 @@
 import socket
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 5005
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description='UDP Sender')
+    parser.add_argument('--ip-address', default='127.0.0.1',
+                        help='IP address')
+    parser.add_argument('--port', '-p', type=int, default=5005,
+                        help='UDP port')
+    args = parser.parse_args()
 
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-sock.bind((UDP_IP, UDP_PORT))
+    sock = socket.socket(socket.AF_INET, # Internet
+                         socket.SOCK_DGRAM) # UDP
+    sock.bind((args.ip_address, args.port))
 
-while True:
-    data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-    print "received message:", data
+    print "UDP target IP:", args.ip_address
+    print "Listening on UDP port:", args.port
+
+    while True:
+        data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
+        print "received message:", data
