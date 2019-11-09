@@ -136,7 +136,7 @@ class BrainSight2Hololens(StoppableThread):
 
 def udp_listen(ip_address, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind((args.my_ip, args.my_port))
+    sock.bind((ip_address, port))
     data, addr = sock.recvfrom(1024)
     return data
 
@@ -182,12 +182,16 @@ if __name__ == '__main__':
     if args.my_ip and args.my_port:
         logger.info("UDP target IP: %s", args.my_ip)
         logger.info("Listening on UDP port: %s", args.my_port)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind((args.my_ip, args.my_port))
+
         logger.info("Use CTRL-C to stop")
         while True:
             try:
-                data = udp_listen(args.my_ip, args.my_port)
+                data, addr = sock.recvfrom(1024)
+                #data = udp_listen(args.my_ip, args.my_port)
             except socket.error as e:
-                logger.error('UDP listener error: %s', e)
+                logger.error('UDP listening error: %s', e)
                 break
             logger.info("Received data: %s", data)
     else:
