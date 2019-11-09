@@ -97,7 +97,7 @@ if __name__ == '__main__':
             }
         }
 
-        serialised_data = json.dump(data)
+        serialised_data = json.dumps(data)
         send(serialised_data, args.hl_ip, args.hl_port)
 
 
