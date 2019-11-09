@@ -163,7 +163,7 @@ if __name__ == '__main__':
     parser.add_argument('--debug', action='store_true',
                         help='enable debug level logging verbosity')
     parser.add_argument('--run-calibration', action='store_true',
-                        help='run calibration')
+                        help='run calibration (TODO)')
     args = parser.parse_args()
 
     if args.debug:
@@ -187,12 +187,8 @@ if __name__ == '__main__':
 
         logger.info("Use CTRL-C to stop")
         while True:
-            try:
-                data, addr = sock.recvfrom(1024)
-                #data = udp_listen(args.my_ip, args.my_port)
-            except socket.error as e:
-                logger.error('UDP listening error: %s', e)
-                break
+            data, addr = sock.recvfrom(1024)
+            #data = udp_listen(args.my_ip, args.my_port)
             logger.info("Received data: %s", data)
     else:
         logger.warning('Not listening')
