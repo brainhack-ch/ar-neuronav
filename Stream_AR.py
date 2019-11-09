@@ -11,10 +11,72 @@ from transformations import random_vector, rotation_matrix, \
                             translation_from_matrix, decompose_matrix
 
 
+
+class StreamBaseError(Exception):
+
+    error_code = 1
+    error_message = "Steam Error"
+
+
+class UmbrellaOutsideError(StreamException):
+
+    error_code = 2
+    error_message = "Umbrella outside field of view"
+
+
 def send(data, ip_address='127.0.0.1', port=5005):
     """Send `data` to `ip_address`:`port` via UDP."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(data, (ip_address, port))
+
+
+def extract_coordinates(filename):
+    a = pd.read_csv(filename, skiprows=5, sep='\t')
+    afull = a[['Coordinate System', 'x', 'y', 'z', 'm0n0', 'm0n1', 'm0n2',
+               'm1n0', 'm1n1', 'm1n2', 'm2n0', 'm2n1', 'm2n2']]
+    af = afull.as_matrix()
+
+    #Create a vector with the last value of the file
+    q = af[len(af)-1: , 0:3 ]
+    m0 = af[len(af)-1: ,3:6]
+    m1 = af[len(af)-1: ,6:9]
+    m2 = af[len(af)-1: ,9:12]
+    if q[0,0] == 'NIfTI:Scanner':
+        raise UmbrellaOutsideError
+        continue
+
+    # divide by 1000. to go from mm to m
+    q = q[0]
+    q = [float(i) / 1000. for i in q]
+    #print(q)
+
+    '''
+    c=pd.read_csv('Brainhack_stream2.txt')
+    chead=c.head(10)
+    ctail=c.tail(1)
+    c = [chead, ctail]
+    c = pd.concat(c)
+    c.to_csv('Brainhack_stream2.txt', header=None, index=None, sep='	', mode='a')
+    '''
+
+    #Convert the coordinates of the dot into brain space
+    #print(np.dot(R,q)+T)
+    #trans_q=np.dot(R,q)+T
+
+    # convert angles into brain space
+    m0 = m0[0]
+    m0 = [float(i) / 1000. for i in m0]
+    #trans_m0=np.dot(R,m0)
+
+    m1 = m1[0]
+    m1 = [float(i) / 1000. for i in m1]
+    #trans_m1=np.dot(R,m1)
+
+    m2 = m2[0]
+    m2 = [float(i) /1000. for i in m2]
+    #trans_m2=np.dot(R,m2)
+
+    return q, m0, m1, m2
 
 
 if __name__ == '__main__':
@@ -30,86 +92,56 @@ if __name__ == '__main__':
     os.chdir('/run/user/1000/gvfs/smb-share:server=192.168.1.9,share=brainhack/shared/Gabriel_brain')
 
     while True:
-
-        a = pd.read_csv('Brainhack_stream2.txt', skiprows=5, sep='\t')
-        a1 = a[['x', 'y', 'z']]
-        a2 = a1.as_matrix()
-
-        afull = a[['x', 'y', 'z', 'm0n0', 'm0n1', 'm0n2', 'm1n0', 'm1n1',
-                   'm1n2', 'm2n0', 'm2n1', 'm2n2']]
-        af = afull.as_matrix()
-
-        #Create a vector with the last value of the file
-        q = a2[len(a2)-1: , : ]
-        m0 = af[len(af)-1: ,3:6]
-        m1 = af[len(af)-1: ,6:9]
-        m2 = af[len(af)-1: ,9:12]
-
-        if q[0,1] == "(null)":
-            print("Umbrella outside field of view")
-            continue
-
-        # divide by 1000. to go from mm to m
-        q = q[0]
-        q = [float(i) / 1000. for i in q]
-        #print(q)
-
-        '''
-		c=pd.read_csv('Brainhack_stream2.txt')
-		chead=c.head(10)
-		ctail=c.tail(1)
-		c = [chead, ctail]
-		c = pd.concat(c)
-		c.to_csv('Brainhack_stream2.txt', header=None, index=None, sep='	', mode='a')
-		'''
-
-        #Convert the coordinates of the dot into brain space
-        #print(np.dot(R,q)+T)
-        #trans_q=np.dot(R,q)+T
-        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_pts.txt', q)
-
-        # convert angles into brain space
-        m0 = m0[0]
-        m0 = [float(i) / 1000. for i in m0]
-        #trans_m0=np.dot(R,m0)
-        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleX.txt', m0)
-
-        m1 = m1[0]
-        m1 = [float(i) / 1000. for i in m1]
-        #trans_m1=np.dot(R,m1)
-        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleY.txt', m1)
-
-        m2 = m2[0]
-        m2 = [float(i) /1000. for i in m2]
-        #trans_m2=np.dot(R,m2)
-        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleZ.txt', m2)
-
-        k = 10.
-
+        # default values
         payload = {
-            'data': {
-                'OrientationPointCone': {
-                    'UnityX': q[0],
-                    'UnityY': q[2],
-                    'UnityZ': q[1],
-                },
-                'EndPointCone': {
-                    'UnityX': q[0] * k * m2[0],
-                    'UnityY': q[2] * k * m2[2],
-                    'UnityZ': q[1] * k * m2[1],
-                },
-                'OrientationPointAxe': {
-                    'UnityX': q[0] * k * m0[0],
-                    'UnityY': q[2] * k * m0[2],
-                    'UnityZ': q[1] * k * m0[1],
-                },
-            'errorCode': 0
+            'data': {},
+            'errorCode': 0,
+            'errorMessage': ''
             }
         }
 
-        serialised_data = json.dumps(data)
-        print(serialised_data)
-        send(serialised_data, args.hl_ip, args.hl_port)
+
+        try:
+            q, m0, m1, m2 = extract_coordinates('Brainhack_stream2.txt')
+        except SteamBaseException as e:
+            payload['errorCode'] = e.error_code
+            payload['errorMessage'] = e.error_message
+
+        # save to file
+        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_pts.txt', q)
+        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleX.txt', m0)
+        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleY.txt', m1)
+        np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleZ.txt', m2)
+
+        if payload['errorCode'] == 0:
+            k = 10.
+            payload = {
+                'data': {
+                    'OrientationPointCone': {
+                        'UnityX': q[0],
+                        'UnityY': q[2],
+                        'UnityZ': q[1],
+                    },
+                    'EndPointCone': {
+                        'UnityX': q[0] + k * m2[0],
+                        'UnityY': q[2] + k * m2[2],
+                        'UnityZ': q[1] + k * m2[1],
+                    },
+                    'OrientationPointAxe': {
+                        'UnityX': q[0] + k * m1[0],
+                        'UnityY': q[2] + k * m1[2],
+                        'UnityZ': q[1] + k * m1[1],
+                    },
+                }
+            }
+
+
+        # send to holo
+        serialised_payload = json.dumps(payload)
+        #print(serialised_payload)
+        send(serialised_payload, args.hl_ip, args.hl_port)
+
+
 
 
         # definition of 3 points in brain space that must go to unity base after transformation
