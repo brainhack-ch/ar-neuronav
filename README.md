@@ -35,7 +35,7 @@ optional arguments:
 Test locally that it sends to hololens (check the hololens ip address on the hololens settings menu, the port is your choice in your unity app):
 
 ```bash
-    python Stream_AR_mt.py -i test_data/Brainhack_stream2.txt --hl-ip 192.168.137.53 --hl-port 9009
+$ python Stream_AR_mt.py -i test_data/Brainhack_stream2.txt --hl-ip 192.168.137.53 --hl-port 9009
 ```
 
 The run `ifconfig` and find your own computerto get your ip address (the one of the PC). *Note* that the pc and the hololens should be on the same network.
@@ -43,7 +43,7 @@ The run `ifconfig` and find your own computerto get your ip address (the one of 
 Final example:
 
 ```bash
-    python Stream_AR_mt.py -i test_data/Brainhack_stream2.txt --hl-ip 192.168.137.53 --hl-port 9009 --my-ip 192.168.137.66 --hl-port 9005
+$ python Stream_AR_mt.py -i test_data/Brainhack_stream2.txt --hl-ip 192.168.137.53 --hl-port 9009 --my-ip 192.168.137.66 --hl-port 9005
 ```
 
 
@@ -67,6 +67,6 @@ In another shell use the `upd_sender` to send UDP messages to the Hololens (use 
 $ python udp_sender --ip-address <hololens-ip-address> --port <hololens-port>
 ```
 
-# Credits
+## Credits
 - Riccardo Poggi
 - Olivier Reynaud
