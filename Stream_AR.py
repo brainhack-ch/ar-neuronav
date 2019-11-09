@@ -5,11 +5,6 @@ import socket
 import json
 import numpy as np
 import pandas as pd
-from transformations import random_vector, rotation_matrix, \
-                            angle_between_vectors, vector_product, \
-                            unit_vector, superimposition_matrix, \
-                            translation_from_matrix, decompose_matrix
-
 
 
 class StreamBaseError(Exception):
@@ -42,8 +37,7 @@ def extract_coordinates(filename):
     m1 = af[len(af)-1: ,6:9]
     m2 = af[len(af)-1: ,9:12]
     if q[0,0] == 'NIfTI:Scanner':
-        raise UmbrellaOutsideError
-        continue
+        raise UmbrellaOutsideError()
 
     # divide by 1000. to go from mm to m
     q = q[0]
@@ -82,14 +76,16 @@ def extract_coordinates(filename):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Stream coordinates to HL')
-    parser.add_argument('--hl-ip', metavar='ip-address', required=True,
+    parser.add_argument('--hl-ip', metavar='ip-address',
                         help='Hololens ip-address')
-    parser.add_argument('--hl-port', metavar='port', type=int, required=True,
+    parser.add_argument('--hl-port', metavar='port', type=int,
                         help='Hololens port')
+    parser.add_argument('--input-file', required=True,
+                        help='Brain sight input file')
     args = parser.parse_args()
 
 
-    os.chdir('/run/user/1000/gvfs/smb-share:server=192.168.1.9,share=brainhack/shared/Gabriel_brain')
+    #os.chdir('/run/user/1000/gvfs/smb-share:server=192.168.1.9,share=brainhack/shared/Gabriel_brain')
 
     while True:
         # default values
@@ -97,12 +93,11 @@ if __name__ == '__main__':
             'data': {},
             'errorCode': 0,
             'errorMessage': ''
-            }
         }
 
 
         try:
-            q, m0, m1, m2 = extract_coordinates('Brainhack_stream2.txt')
+            q, m0, m1, m2 = extract_coordinates(args.input_file)
         except SteamBaseException as e:
             payload['errorCode'] = e.error_code
             payload['errorMessage'] = e.error_message
@@ -137,9 +132,10 @@ if __name__ == '__main__':
 
 
         # send to holo
-        serialised_payload = json.dumps(payload)
-        #print(serialised_payload)
-        send(serialised_payload, args.hl_ip, args.hl_port)
+        serialised_payload = json.dumps(payload, indent=4)
+        print(serialised_payload)
+        if args.hl_ip and args.hl_port:
+            send(serialised_payload, args.hl_ip, args.hl_port)
 
 
 
