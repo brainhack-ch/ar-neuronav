@@ -36,12 +36,13 @@ def extract_coordinates(filename):
     m0 = af[len(af)-1: ,3:6]
     m1 = af[len(af)-1: ,6:9]
     m2 = af[len(af)-1: ,9:12]
+
     if q[0,0] == 'NIfTI:Scanner':
         raise UmbrellaOutsideError()
 
-    # divide by 1000. to go from mm to m
-    q = q[0]
-    q = [float(i) / 1000. for i in q]
+    # Note: will divide by 1000. to go from mm to m
+
+    q = [float(i) / 1000. for i in q[0]]
     #print(q)
 
     '''
@@ -58,16 +59,13 @@ def extract_coordinates(filename):
     #trans_q=np.dot(R,q)+T
 
     # convert angles into brain space
-    m0 = m0[0]
-    m0 = [float(i) / 1000. for i in m0]
+    m0 = [float(i) / 1000. for i in m0[0]]
     #trans_m0=np.dot(R,m0)
 
-    m1 = m1[0]
-    m1 = [float(i) / 1000. for i in m1]
+    m1 = [float(i) / 1000. for i in m1[0]]
     #trans_m1=np.dot(R,m1)
 
-    m2 = m2[0]
-    m2 = [float(i) /1000. for i in m2]
+    m2 = [float(i) /1000. for i in m2[0]]
     #trans_m2=np.dot(R,m2)
 
     return q, m0, m1, m2
