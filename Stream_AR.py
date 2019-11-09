@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
         try:
             q, m0, m1, m2 = extract_coordinates(args.input_file)
-        except StreamBaseException as e:
+        except StreamBaseError as e:
             payload['errorCode'] = e.error_code
             payload['errorMessage'] = e.error_message
 
