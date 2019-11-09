@@ -1,0 +1,20 @@
+{
+    "data": {
+        "OrientationPointCone": {
+            "UnityX": 1,
+            "UnityY": 1,
+            "UnityZ": 1
+        },
+        "EndPointCone": {
+            "UnityX": 1,
+            "UnityY": 1,
+            "UnityZ": 1
+        },
+        "OrientationPointAxe": {
+            "UnityX": 1,
+            "UnityY": 1,
+            "UnityZ": 1
+        },
+        "errorCode": 0
+    }
+}
