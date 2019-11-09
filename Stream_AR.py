@@ -49,8 +49,9 @@ if __name__ == '__main__':
             print("Umbrella outside field of view")
             continue
 
+        # divide by 1000. to go from mm to m
         q = q[0]
-        q = [float(i) for i in q]
+        q = [float(i) / 1000. for i in q]
         #print(q)
 
         '''
@@ -69,35 +70,45 @@ if __name__ == '__main__':
 
         # convert angles into brain space
         m0 = m0[0]
-        m0 = [float(i) for i in m0]
+        m0 = [float(i) / 1000. for i in m0]
         #trans_m0=np.dot(R,m0)
         np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleX.txt', m0)
 
         m1 = m1[0]
-        m1 = [float(i) for i in m1]
+        m1 = [float(i) / 1000. for i in m1]
         #trans_m1=np.dot(R,m1)
         np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleY.txt', m1)
 
         m2 = m2[0]
-        m2 = [float(i) for i in m2]
+        m2 = [float(i) /1000. for i in m2]
         #trans_m2=np.dot(R,m2)
         np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleZ.txt', m2)
 
+        k = 10.
 
-        data = {
-            'q': {
-                'x': q[0],
-                'y': q[1],
-                'z': q[2]
-            },
-            'm0': {
-                'n0': m0[0],
-                'n1': m0[1],
-                'n2': m0[2],
+        payload = {
+            'data': {
+                'OrientationPointCone': {
+                    'UnityX': q[0],
+                    'UnityY': q[2],
+                    'UnityZ': q[1],
+                },
+                'EndPointCone': {
+                    'UnityX': q[0] * k * m2[0],
+                    'UnityY': q[2] * k * m2[2],
+                    'UnityZ': q[1] * k * m2[1],
+                },
+                'OrientationPointAxe': {
+                    'UnityX': q[0] * k * m0[0],
+                    'UnityY': q[2] * k * m0[2],
+                    'UnityZ': q[1] * k * m0[1],
+                },
+            'errorCode': 0
             }
         }
 
         serialised_data = json.dumps(data)
+        print(serialised_data)
         send(serialised_data, args.hl_ip, args.hl_port)
 
 
