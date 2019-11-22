@@ -8,7 +8,7 @@ if __name__ == '__main__':
                         help='IP address')
     parser.add_argument('--port', '-p', type=int, default=5005,
                         help='UDP port')
-    parser.add_argument('--message', default='Hello, World!',
+    parser.add_argument('--message', default='Hello',
                         help='payload message')
     args = parser.parse_args()
 
@@ -16,6 +16,8 @@ if __name__ == '__main__':
     print "UDP target port:", args.port
     print "message:", args.message
 
+
+    #while 1==1:
     sock = socket.socket(socket.AF_INET, # Internet
                          socket.SOCK_DGRAM) # UDP
     sock.sendto(args.message, (args.ip_address, args.port))

@@ -17,7 +17,7 @@ class UmbrellaOutsideError(StreamBaseError):
     error_message = "Umbrella outside field of view"
 
 
-def send(data, ip_address='127.0.0.1', port=5005):
+def send(data, ip_address='127.0.0.1', port=5005):#'192.168.137.53', port=9009):
     """Send `data` to `ip_address`:`port` via UDP."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(data, (ip_address, port))
@@ -130,7 +130,7 @@ if __name__ == '__main__':
             # here we create a single string with coordinates of 3 points instead of json to be passed via udp
             # string of the kind 'Ex,Ey,Ez;Ox,Oy,Oz;Ax,Ay,Az'
             
-            serialised_payload=str(int(q[0])) + ',' + str(int(q[2])) + ',' + str(int(q[1])) + ';' + str(int(q[0] + k * m2[0])) + ',' + str(int(q[2] + k * m2[2])) + ','+ str(int(q[1] + k * m2[1])) + ';' + str(int(q[0] + k * m1[0])) + ',' + str(int(q[2] + k * m1[2])) + ',' + str(int(q[1] + k * m1[1]))
+            serialised_payload=str(int(1000*q[0])) + ',' + str(int(q[2])) + ',' + str(int(q[1])) + ';' + str(int(q[0] + k * m2[0])) + ',' + str(int(q[2] + k * m2[2])) + ','+ str(int(q[1] + k * m2[1])) + ';' + str(int(q[0] + k * m1[0])) + ',' + str(int(q[2] + k * m1[2])) + ',' + str(int(q[1] + k * m1[1]))
             #print(serialised_payload)
 
         # send to holo
@@ -139,7 +139,11 @@ if __name__ == '__main__':
         if args.hl_ip and args.hl_port:
             send(serialised_payload, args.hl_ip, args.hl_port)
 
-
+        #serialised_payload='-420,77,-7;-45,87,-8;-35,80,-1'
+        #print(serialised_payload)
+        #if args.hl_ip and args.hl_port:
+        #    send(serialised_payload, args.hl_ip, args.hl_port)        
+            
 
 
         # definition of 3 points in brain space that must go to unity base after transformation
