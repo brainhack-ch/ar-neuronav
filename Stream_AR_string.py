@@ -84,6 +84,10 @@ if __name__ == '__main__':
 
 
     #os.chdir('/run/user/1000/gvfs/smb-share:server=192.168.1.9,share=brainhack/shared/Gabriel_brain')
+    #serialised_payload='TT -420 77 -7 -45 87 -8 -35 80 -1'
+    #if args.hl_ip and args.hl_port:
+        #send(serialised_payload, args.hl_ip, args.hl_port)    
+
 
     while True:
         # default values
@@ -108,7 +112,7 @@ if __name__ == '__main__':
         #np.savetxt('/home/oreynaud/Desktop/Brainhack/data/update_angleZ.txt', m2)
 
         if payload['errorCode'] == 0:
-            k = 10.
+            k = 50.
             payload['data'] = {
                     'EndPointCone': {
                         'UnityX': int(q[0]),
@@ -130,15 +134,23 @@ if __name__ == '__main__':
             # here we create a single string with coordinates of 3 points instead of json to be passed via udp
             # string of the kind 'Ex,Ey,Ez;Ox,Oy,Oz;Ax,Ay,Az'
             
-            serialised_payload=str(int(1000*q[0])) + ',' + str(int(q[2])) + ',' + str(int(q[1])) + ';' + str(int(q[0] + k * m2[0])) + ',' + str(int(q[2] + k * m2[2])) + ','+ str(int(q[1] + k * m2[1])) + ';' + str(int(q[0] + k * m1[0])) + ',' + str(int(q[2] + k * m1[2])) + ',' + str(int(q[1] + k * m1[1]))
-            #print(serialised_payload)
-
+          #  serialised_payload='CT '+str(int(1000*q[0])) + ',' + str(int(1000*q[2])) + ',' + str(int(1000*q[1])) + ';' + str(int(q[0] + k * m2[0])) + ',' + str(int(q[2] + k * m2[2])) + ','+ str(int(q[1] + k * m2[1])) + ';' + str(int(q[0] + k * m1[0])) + ',' + str(int(q[2] + k * m1[2])) + ',' + str(int(q[1] + k * m1[1]))
+            serialised_payload='CT '+str(int(q[0])) + ' ' + str(int(q[2])) + ' ' + str(int(q[1])) + ' ' + str(int(q[0] + k * m2[0])) + ' ' + str(int(q[2] + k * m2[2])) + ' '+ str(int(q[1] + k * m2[1])) + ' ' + str(int(q[0] + k * m1[0])) + ' ' + str(int(q[2] + k * m1[2])) + ' ' + str(int(q[1] + k * m1[1]))
+            
+            print(serialised_payload)
+            
+                       
         # send to holo
         #serialised_payload = json.dumps(payload, indent=4)
-        print(serialised_payload)
+        #print(serialised_payload)
         if args.hl_ip and args.hl_port:
             send(serialised_payload, args.hl_ip, args.hl_port)
-
+            
+        serialised_payload='TT '+str(int(q[0])) + ' ' + str(int(q[2])) + ' ' + str(int(q[1])) + ' ' + str(int(q[0] + k * m2[0])) + ' ' + str(int(q[2] + k * m2[2])) + ' '+ str(int(q[1] + k * m2[1])) + ' ' + str(int(q[0] + k * m1[0])) + ' ' + str(int(q[2] + k * m1[2])) + ' ' + str(int(q[1] + k * m1[1]))            
+        print(serialised_payload)             
+        if args.hl_ip and args.hl_port:
+            send(serialised_payload, args.hl_ip, args.hl_port)
+        
         #serialised_payload='-420,77,-7;-45,87,-8;-35,80,-1'
         #print(serialised_payload)
         #if args.hl_ip and args.hl_port:
